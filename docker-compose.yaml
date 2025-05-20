@@ -1,0 +1,97 @@
+services:
+  gateway:
+    container_name: urban-hotel-gateway
+    build:
+      context: ./
+      dockerfile: .devops/Docker/Dockerfile.gateway
+    env_file:
+      - ./.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./gateway:/app/gateway
+    depends_on:
+      - consul
+    networks:
+      - urban-hotel-ecosystem
+
+  auth-manager:
+    container_name: urban-hotel-auth-manager
+    build:
+      context: ./
+      dockerfile: .devops/Docker/Dockerfile.auth_manager
+    env_file:
+      - ./.env
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./services/auth_manager:/app/auth_manager
+    depends_on:
+      - consul
+      - mongodb
+    networks:
+      - urban-hotel-ecosystem
+
+  room-manager:
+    container_name: urban-hotel-room-manager
+    build:
+      context: ./
+      dockerfile: .devops/Docker/Dockerfile.room_manager
+    env_file:
+      - ./.env
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./services/room_manager:/app/room_manager
+    depends_on:
+      - consul
+      - mongodb
+    networks:
+      - urban-hotel-ecosystem
+
+  user-manager:
+    container_name: urban-hotel-user-manager
+    build:
+      context: ./
+      dockerfile: .devops/Docker/Dockerfile.user_manager
+    env_file:
+      - ./.env
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./services/user_manager:/app/user_manager
+    depends_on:
+      - consul
+      - mongodb
+    networks:
+      - urban-hotel-ecosystem
+
+  consul:
+    image: consul:1.10.0
+    container_name: urban-hotel-discovery
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    command: agent -dev -client=0.0.0.0
+    volumes:
+      - consul-data:/consul/data
+    networks:
+      - urban-hotel-ecosystem
+
+  mongodb:
+    image: mongo:5.0
+    container_name: urban-hotel-database
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - urban-hotel-ecosystem
+
+volumes:
+  consul-data:
+  mongo-data:
+
+networks:
+  urban-hotel-ecosystem:
+    driver: bridge
