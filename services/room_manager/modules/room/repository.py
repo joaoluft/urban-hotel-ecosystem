@@ -12,8 +12,9 @@ class RoomRepository:
         room.pop("_id")
         return room
 
-    def get_room(self, room_id: str):
-        return self.database["rooms"].find_one({"external_id": room_id})
+    def get_room(self, external_id: str):
+        room = self.database["rooms"].find_one({"external_id": external_id})
+        return self.normalize_external_room(room)
     
     def filter_rooms(
         self,

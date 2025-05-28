@@ -8,10 +8,10 @@ from .models import RoomFiltersModel, FilteredRoomsModel
 class RoomService:
     discovery: ServiceDiscovery
 
-    async def get_room(self, room_id: str):
+    async def get_room(self, external_id: str):
         return await self.discovery.call_service(
             service_name="room-manager",
-            endpoint=f"/room/{room_id}",
+            endpoint=f"/room/{external_id}",
             method="GET"
         )
     

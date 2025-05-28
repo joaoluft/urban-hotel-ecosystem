@@ -2,14 +2,21 @@ from fastapi import Depends
 from dataclasses import dataclass
 
 from .repository import get_repository, RoomRepository
-from .models import RoomFiltersModel, FilteredRoomsModel
+from .models import RoomFiltersModel, FilteredRoomsModel, ExternalRoomModel
 
 @dataclass
 class RoomService:
     repository: RoomRepository
 
-    def get_room(self, room_id: str):
-        return self.repository.get_room(room_id=room_id)
+    def get_room(self, external_id: str) -> ExternalRoomModel:
+        room: ExternalRoomModel = self.repository.get_room(external_id)
+        return ExternalRoomModel(
+            external_id=room["external_id"],
+            name=room["name"],
+            details=room["details"],
+            available=room["available"],
+            price=room["price"]
+        )
     
     def filter_rooms(self, filters: RoomFiltersModel) -> FilteredRoomsModel:
         query = self.repository.filter_rooms(

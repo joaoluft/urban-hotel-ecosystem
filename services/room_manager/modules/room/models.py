@@ -5,14 +5,14 @@ class RoomBaseModel(BaseModel):
     external_id: str
     name: str
     details: list[str]
-    created_at: str
-    updated_at: str
     available: bool
     price: float
 
 class RoomModel(RoomBaseModel):
     id: str
     owner_id: str
+    created_at: str
+    updated_at: str
 
 class ExternalRoomModel(RoomBaseModel):
     pass
