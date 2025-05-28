@@ -7,6 +7,7 @@ from jwt import encode
 from auth_manager.dependencies.discovery.client import get_discovery, ServiceDiscovery
 from auth_manager.core.config import Settings, get_settings
 from auth_manager.core.hasher import get_password_hasher, PasswordHasher
+from .models import LoginResponseModel
 
 @dataclass
 class AuthService:
@@ -14,7 +15,7 @@ class AuthService:
     config: Settings
     hasher: PasswordHasher
 
-    async def login(self, identifier: str, password: str) -> str | None:
+    async def login(self, identifier: str, password: str) -> LoginResponseModel | None:
         user = await self.discovery.call_service(
             service_name="user-manager",
             endpoint=f"/user/by-identifier/{identifier}",
@@ -36,10 +37,17 @@ class AuthService:
             "exp": now + timedelta(seconds=self.config.jwt_expiration),
         }
 
-        return encode(
+        token = encode(
             payload=payload,
             key=self.config.jwt_secret,
             algorithm=self.config.jwt_algorithm,
+        )
+
+        return LoginResponseModel(
+            id=user["external_id"],
+            token=token,
+            username=user["username"],
+            email=user["email"],
         )
 
 def get_service(

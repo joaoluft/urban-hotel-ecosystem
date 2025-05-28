@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBearer
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from .core.config import Settings
@@ -16,6 +17,14 @@ security = HTTPBearer()
 app = FastAPI(
     title="Urban Hotel - Gateway",
     dependencies=[Depends(security)],
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.add_middleware(

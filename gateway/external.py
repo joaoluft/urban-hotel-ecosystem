@@ -8,4 +8,4 @@ external_app = FastAPI(
     openapi_url="/openapi.json"
 )
 
-external_app.include_router(external_router, prefix="/api")
+external_app.include_router(external_router)

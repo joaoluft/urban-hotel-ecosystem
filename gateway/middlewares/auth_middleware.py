@@ -13,6 +13,13 @@ class AuthMiddleware(BaseHTTPMiddleware):
         self.settings = settings
 
     async def dispatch(self, request: Request, call_next):
+        if request.method == "OPTIONS":
+            return JSONResponse(status_code=200, content={}, headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Headers": "*",
+            })
+    
         if request.url.path in EXCLUDED_PATHS:
             return await call_next(request)
         

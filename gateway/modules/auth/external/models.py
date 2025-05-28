@@ -1,8 +1,11 @@
 from pydantic import BaseModel
 
-class LoginModel(BaseModel):
+class LoginRequestModel(BaseModel):
     identifier: str
     password: str
 
-class TokenModel(BaseModel):
+class LoginResponseModel(BaseModel):
+    id: str
     token: str
+    username: str
+    email: str
