@@ -88,6 +88,15 @@ services:
     networks:
       - urban-hotel-ecosystem
 
+  mailhog:
+    image: mailhog/mailhog
+    container_name: urban-hotel-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - urban-hotel-ecosystem
+
 volumes:
   consul-data:
   mongo-data:

@@ -65,6 +65,7 @@ class ServiceDiscovery:
                     return response.json()
                 except ValueError:
                     return response.text
+                
 
         except httpx.HTTPStatusError as e:
             raise Exception(f"[Discovery] HTTP error calling '{service_name}': {e.response.status_code} - {e.response.text}") from e

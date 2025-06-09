@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirmação de E-mail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f7;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: #2d3748;
+    }
+
+    .content {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 25px;
+      background-color: #252525;
+      color: #ffffff !important;
+      padding: 12px 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+    }
+
+    a.button:hover {
+      background-color: #222222;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Confirme seu e-mail</h1>
+    </div>
+    <div class="content">
+      <p>Olá, <strong>{{ username }}</strong>!</p>
+      <p>Obrigado por se cadastrar. Para completar seu registro, confirme seu endereço de e-mail clicando no botão abaixo:</p>
+      <p style="text-align: center;">
+        <a href="{{ confirmation_link }}" class="button">Confirmar E-mail</a>
+      </p>
+      <p>Se você não solicitou este cadastro, ignore este e-mail.</p>
+    </div>
+    <div class="footer">
+        Urban Hotel Team
+    </div>
+  </div>
+</body>
+</html>
