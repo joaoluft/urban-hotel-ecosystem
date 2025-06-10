@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 from typing import AsyncGenerator
 from consul import Consul
+from user_manager.core.config import Settings
 
 async def lifespan(app: FastAPI) -> AsyncGenerator:
-    consul = Consul(host="consul", port=8500)
+    settings: Settings = Settings()
+    consul = Consul(
+        host=settings.discovery_host, 
+        port=settings.discovery_port
+    )
 
     service_identifier = "user-manager"
     service_port = 8003

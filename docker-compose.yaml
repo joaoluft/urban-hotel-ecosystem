@@ -66,6 +66,23 @@ services:
     networks:
       - urban-hotel-ecosystem
 
+  booking-manager:
+    container_name: urban-hotel-booking-manager
+    build:
+      context: ./
+      dockerfile: .devops/Docker/Dockerfile.booking_manager
+    env_file:
+      - ./.env
+    ports:
+      - "8004:8004"
+    volumes:
+      - ./services/booking_manager:/app/booking_manager
+    depends_on:
+      - consul
+      - mongodb
+    networks:
+      - urban-hotel-ecosystem
+
   consul:
     image: consul:1.10.0
     container_name: urban-hotel-discovery
@@ -97,6 +114,17 @@ services:
     networks:
       - urban-hotel-ecosystem
 
+  payment-gateway:
+    image: wiremock/wiremock:3.3.1
+    container_name: urban-hotel-payment-gateway
+    ports:
+      - "8085:8085"
+    volumes:
+      - .devops/Wiremock/mocks:/home/wiremock
+    command: ["--global-response-templating", "--port", "8085"]
+    networks:
+      - urban-hotel-ecosystem
+    
 volumes:
   consul-data:
   mongo-data:

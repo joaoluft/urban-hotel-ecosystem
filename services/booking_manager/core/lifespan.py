@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from typing import AsyncGenerator
 from consul import Consul
-from room_manager.core.config import Settings
+from booking_manager.core.config import Settings
 
 async def lifespan(app: FastAPI) -> AsyncGenerator:
     settings: Settings = Settings()
@@ -10,9 +10,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
         port=settings.discovery_port
     )
 
-    service_identifier = "room-manager"
-    service_port = 8002
-    check_url = f"http://room-manager:{service_port}/health"
+    service_identifier = "booking-manager"
+    service_port = 8004
+    check_url = f"http://booking-manager:{service_port}/health"
 
     consul.agent.service.register(
         service_identifier,

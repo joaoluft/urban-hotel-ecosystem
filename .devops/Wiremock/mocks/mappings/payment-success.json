@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/payment"
+  },
+  "response": {
+    "status": 200,
+    "body": "{ \"status\": \"SUCCESS\", \"transaction_id\": \"{{randomValue type='UUID'}}\", \"message\": \"Pagamento aprovado com sucesso\" }",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": ["response-template"]
+  }
+}

@@ -2,11 +2,45 @@ from fastapi import Depends
 from dataclasses import dataclass
 
 from .repository import get_repository, RoomRepository
-from .models import RoomFiltersModel, FilteredRoomsModel, ExternalRoomModel
+from .models import (
+    RoomFiltersModel, 
+    FilteredRoomsModel, 
+    ExternalRoomModel, 
+    RoomModel, 
+    RoomUpdateModel
+)
 
 @dataclass
 class RoomService:
     repository: RoomRepository
+
+    def update_room(self, room_id: str, data: RoomUpdateModel) -> bool:
+        updated = self.repository.update_room(
+            room_id=room_id,
+            data=data.model_dump(exclude_unset=True, exclude_defaults=True)
+        )
+        if not updated:
+            return False
+        
+        return True
+
+    def get_internal_room(self, room_id: str) -> RoomModel | None:
+        room = self.repository.get_internal_room(room_id)
+        print(room)
+        if not room:
+            return None
+        
+        return RoomModel(
+            id=str(room["_id"]),
+            external_id=room["external_id"],
+            name=room["name"],
+            details=room["details"],
+            available=room["available"],
+            price=room["price"],
+            owner_id=room["owner_id"],
+            created_at=room["created_at"],
+            updated_at=room["updated_at"]
+        )
 
     def get_room(self, external_id: str) -> ExternalRoomModel:
         room: ExternalRoomModel = self.repository.get_room(external_id)
@@ -16,6 +50,20 @@ class RoomService:
             details=room["details"],
             available=room["available"],
             price=room["price"]
+        )
+    
+    def get_room_by_external(self, external_id: str) -> RoomModel:
+        room: ExternalRoomModel = self.repository.get_room_by_external(external_id)
+        return RoomModel(
+            id=str(room["_id"]),
+            external_id=room["external_id"],
+            name=room["name"],
+            details=room["details"],
+            available=room["available"],
+            price=room["price"],
+            owner_id=room["owner_id"],
+            created_at=room["created_at"],
+            updated_at=room["updated_at"]
         )
     
     def filter_rooms(self, filters: RoomFiltersModel) -> FilteredRoomsModel:

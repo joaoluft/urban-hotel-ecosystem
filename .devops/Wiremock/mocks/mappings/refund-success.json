@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/refund"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\n  \"status\": \"SUCCESS\",\n  \"transaction_id\": \"{{jsonPath request.body '$.transaction_id'}}\",\n  \"refund_id\": \"{{randomValue type='UUID'}}\",\n  \"message\": \"Reembolso efetuado com sucesso para a transação {{jsonPath request.body '$.transaction_id'}}\"\n}",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": ["response-template"]
+  }
+}

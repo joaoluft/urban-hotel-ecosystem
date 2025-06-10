@@ -31,3 +31,12 @@ class FilteredRoomsModel(BaseModel):
     page: int
     per_page: int
     last_page: int
+
+class RoomUpdateModel(BaseModel):
+    name: Optional[str] = None
+    details: Optional[list[str]] = None
+    available: Optional[bool] = None
+    price: Optional[float] = None
+
+class RoomUpdateResponseModel(BaseModel):
+    success: bool

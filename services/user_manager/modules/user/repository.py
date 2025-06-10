@@ -14,6 +14,10 @@ class UserRepository:
     def get_user(self, user_id: str):
         return self.database["users"].find_one({"_id": ObjectId(user_id)})
     
+    def get_external_user(self, external_id: str):
+        user = self.database["users"].find_one({"external_id": external_id})
+        return {**user, "_id": str(user["_id"])} if user else None
+    
     def get_user_by_identifier(self, identifier: str):
         user = self.database["users"].find_one({
             "$or": [

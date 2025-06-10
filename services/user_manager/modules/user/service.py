@@ -12,6 +12,9 @@ class UserService:
     def get_user(self, user_id: str):
         return self.repository.get_user(user_id)
     
+    def get_external_user(self, external_id: str):
+        return self.repository.get_external_user(external_id)
+    
     def get_user_by_identifier(self, identifier: str):
         return self.repository.get_user_by_identifier(identifier)
     

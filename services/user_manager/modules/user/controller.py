@@ -14,6 +14,10 @@ router = APIRouter(prefix="/user", tags=["user"])
 def get_user(user_id: str, service: UserService = Depends(get_service)):
     return service.get_user(user_id)
 
+@router.get("/external/{external_id}", status_code=200)
+def get_external_user(external_id: str, service: UserService = Depends(get_service)):
+    return service.get_external_user(external_id)
+
 @router.get("/by-identifier/{identifier}", status_code=200)
 def get_user_by_identifier(identifier: str, service: UserService = Depends(get_service)):
     return service.get_user_by_identifier(identifier)
