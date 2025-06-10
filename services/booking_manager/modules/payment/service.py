@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from booking_manager.dependencies.payment.client import get_payment_gateway, PaymentGateway
-from .models import PaymentStatus, PaymentResponseModel
+from .models import PaymentStatus, PaymentResponseModel, RefundResponseModel
 
 @dataclass
 class PaymentService:
@@ -29,13 +29,16 @@ class PaymentService:
             )
         
     async def refund_payment(self, transaction_id: id) -> PaymentStatus:
-        refund = await self.gateway.process_refund({transaction_id})
+        refund = await self.gateway.process_refund({"transaction_id": transaction_id})
 
         if not refund:
-            return PaymentStatus.FAILED
+            return RefundResponseModel(status=PaymentStatus.FAILED)
         
         if refund.get("status") == PaymentStatus.SUCCESS.value:
-            return PaymentStatus.SUCCESS
+            return RefundResponseModel(
+                status=PaymentStatus.REFUNDED, 
+                refund_id=refund.get("refund_id")
+            )
 
 def get_service(gateway: PaymentGateway = Depends(get_payment_gateway)) -> PaymentService:
     return PaymentService(gateway=gateway)

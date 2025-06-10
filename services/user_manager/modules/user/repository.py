@@ -12,7 +12,10 @@ class UserRepository:
     database: Database
 
     def get_user(self, user_id: str):
-        return self.database["users"].find_one({"_id": ObjectId(user_id)})
+        user = self.database["users"].find_one({"_id": ObjectId(user_id)})
+        if user:
+            user["_id"] = str(user["_id"])
+        return user
     
     def get_external_user(self, external_id: str):
         user = self.database["users"].find_one({"external_id": external_id})

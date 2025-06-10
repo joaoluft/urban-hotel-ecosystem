@@ -22,3 +22,13 @@ async def create_booking(
         card_expiration_date=payload.card_expiration_date
     )
     return BookingCreateResponseModel(success=result["success"])
+
+@router.delete("/{external_id}", status_code=200)
+async def delete_booking(
+    external_id: str,
+    service: BookingService = Depends(get_service),
+):
+    result = await service.delete_booking(
+        external_id=external_id
+    )
+    return {"success": result["success"]}

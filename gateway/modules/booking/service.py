@@ -32,6 +32,16 @@ class BookingService:
                 "card_expiration_date": card_expiration_date
             }
         )
+    
+    async def delete_booking(
+            self, 
+            external_id: str,
+        ) -> bool:
+        return await self.discovery.call_service(
+            service_name="booking-manager",
+            endpoint=f"/booking/{external_id}",
+            method="DELETE"
+        )
 
 def get_service(discovery: ServiceDiscovery = Depends(get_discovery)) -> BookingService:
     return BookingService(discovery=discovery)

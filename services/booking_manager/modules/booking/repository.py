@@ -23,7 +23,8 @@ class BookingRepository:
         room_id: str,
         user_id: str,
         transaction_id: str,
-        payment_status: str
+        payment_status: str,
+        amount: float
     ) -> dict | None:
         booking = {
             "external_id": str(uuid4()),
@@ -33,6 +34,7 @@ class BookingRepository:
             "user_id": user_id,
             "transaction_id": transaction_id,
             "payment_status": payment_status,
+            "amount": amount,
             "created_at": datetime.now(timezone.utc),
             "updated_at": datetime.now(timezone.utc),
             "deleted_at": None
@@ -45,6 +47,22 @@ class BookingRepository:
 
         booking["_id"] = result.inserted_id
         return booking
+    
+    def delete_booking(self, external_id: str, refund_id: str) -> bool:
+        result = self.database["bookings"].update_one(
+            {"external_id": external_id},
+            {"$set": {
+                "deleted_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc),
+                "payment_status": "REFUNDED",
+                "refund_id": refund_id
+            }}
+        )
+
+        if result.modified_count == 0:
+            return False
+
+        return True
 
 def get_repository(database: Database = Depends(get_database)) -> BookingRepository:
     return BookingRepository(database=database)

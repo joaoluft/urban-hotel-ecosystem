@@ -26,7 +26,6 @@ class RoomService:
 
     def get_internal_room(self, room_id: str) -> RoomModel | None:
         room = self.repository.get_internal_room(room_id)
-        print(room)
         if not room:
             return None
         

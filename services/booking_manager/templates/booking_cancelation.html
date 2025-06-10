@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Confirmação de Reserva</title>
+  <meta charset="UTF-8" />
+  <title>Confirmação de Cancelamento de Reserva</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -70,25 +70,26 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>Reserva Confirmada</h1>
+      <h1>Cancelamento Confirmado</h1>
     </div>
     <div class="content">
       <p>Olá, <strong>{{ username }}</strong>!</p>
-      <p>Estamos felizes em informar que sua reserva foi confirmada com sucesso. Aqui estão os detalhes:</p>
-      
+      <p>Confirmamos que sua reserva foi cancelada com sucesso. Abaixo estão os detalhes da reserva cancelada:</p>
+
       <div class="details">
         <p><strong>Quarto:</strong> {{ room_name }}</p>
-        <p><strong>Check-in:</strong> {{ checkin_date }}</p>
-        <p><strong>Check-out:</strong> {{ checkout_date }}</p>
-        <p><strong>Valor total pago:</strong> {{ total_amount }}</p>
+        <p><strong>Check-in original:</strong> {{ checkin_date }}</p>
+        <p><strong>Check-out original:</strong> {{ checkout_date }}</p>
+        <p><strong>Valor total reembolsado (Até 72h):</strong> {{ total_amount }}</p>
+        <p><strong>Data do cancelamento:</strong> {{ cancellation_date }}</p>
       </div>
 
-      <p>Se precisar cancelar sua reserva, clique no botão abaixo:</p>
+      <p>Se desejar fazer uma nova reserva, clique no botão abaixo:</p>
       <p style="text-align: center;">
-        <a href="{{ my_bookings_link }}" class="button">Gerenciar Reserva</a>
+        <a href="{{ rooms_page_link }}" class="button">Fazer Nova Reserva</a>
       </p>
 
-      <p>Estamos ansiosos para recebê-lo(a)! Se tiver qualquer dúvida, entre em contato conosco.</p>
+      <p>Se tiver dúvidas ou precisar de ajuda, não hesite em nos contatar.</p>
     </div>
     <div class="footer">
       Urban Hotel Team
