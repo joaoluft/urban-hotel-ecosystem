@@ -19,6 +19,18 @@ class BookingService:
     email: Email
     settings: Settings
 
+    async def list_bookings(self, user_external_id: str):
+        user = await self.discovery.call_service(
+            service_name="user-manager",
+            endpoint=f"/user/external/{user_external_id}",
+            method="GET"
+        )
+
+        if not user:
+            return []
+        
+        return self.repository.list_bookings(user_id=user["_id"])
+
     def get_booking(self, booking_id: str):
         return self.repository.get_booking(booking_id)
     

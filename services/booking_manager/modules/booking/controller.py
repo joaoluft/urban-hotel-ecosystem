@@ -9,6 +9,10 @@ from .models import (
 
 router = APIRouter(prefix="/booking", tags=["booking"])
 
+@router.get("/list/{user_external_id}", status_code=200)
+async def list_bookings(user_external_id: str, service: BookingService = Depends(get_service)):
+    return await service.list_bookings(user_external_id=user_external_id)
+
 @router.get("/{booking_id}", status_code=200)
 def get_booking(booking_id: str, service: BookingService = Depends(get_service)):
     return service.get_booking(booking_id)

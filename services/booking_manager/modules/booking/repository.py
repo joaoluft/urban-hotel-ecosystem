@@ -10,6 +10,12 @@ from booking_manager.dependencies.database.client import get_database, Database
 class BookingRepository:
     database: Database
 
+    def list_bookings(self, user_id: str):
+        bookings = list(self.database["bookings"].find({"user_id": user_id}))
+        for booking in bookings:
+            booking.pop("_id", None)
+        return bookings
+
     def get_booking(self, booking_id: str):
         return self.database["bookings"].find_one({"_id": ObjectId(booking_id)})
     
