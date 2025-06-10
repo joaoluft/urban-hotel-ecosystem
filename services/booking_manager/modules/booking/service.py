@@ -41,7 +41,7 @@ class BookingService:
                 endpoint=f"/room/by-external-id/{room_external_id}",
                 method="GET"
             )
-            if not room or not room.get("available", False):
+            if not room:
                 return None
             return room
         except Exception as e:
@@ -121,25 +121,13 @@ class BookingService:
             }
         )
 
-    async def _mark_room_unavailable(self, room_id: str) -> bool:
-        try:
-            result = await self.discovery.call_service(
-                service_name="room-manager",
-                endpoint=f"/room/{room_id}",
-                method="PATCH",
-                json={"available": False}
-            )
-            return bool(result)
-        except Exception as e:
-            print(f"[Booking] Room update failed: {e}")
-            return False
-
     def _store_booking(
         self,
         checkin: datetime,
         checkout: datetime,
         room_id: str,
         user_id: str,
+        room_name: str,
         payment: PaymentStatus,
         amount: float
     ) -> bool:
@@ -149,6 +137,7 @@ class BookingService:
                 checkout_date=checkout,
                 room_id=room_id,
                 user_id=user_id,
+                room_name=room_name,
                 transaction_id=payment.transaction_id,
                 payment_status=payment.status.value,
                 amount=amount
@@ -190,11 +179,14 @@ class BookingService:
         if payment.status != PaymentStatus.SUCCESS:
             return False
 
-        if not await self._mark_room_unavailable(room["id"]):
-            return False
-
         store = self._store_booking(
-            checkin_date, checkout_date, room["id"], user["_id"], payment, amount
+            checkin=checkin_date, 
+            checkout=checkout_date, 
+            room_id=room["id"], 
+            user_id=user["_id"], 
+            payment=payment, 
+            amount=amount,
+            room_name=room["name"]
         )
 
         if not store:
@@ -214,16 +206,6 @@ class BookingService:
     async def delete_booking(self, external_id: str) -> bool:
         booking = self.repository.get_external_booking(external_id)
         if not booking or booking.get("deleted_at"):
-            return False
-        
-        room = await self.discovery.call_service(
-            service_name="room-manager",
-            endpoint=f"/room/{booking['room_id']}",
-            method="PATCH",
-            json={ "available": True }
-        )
-
-        if not room:
             return False
         
         user = await self.discovery.call_service(

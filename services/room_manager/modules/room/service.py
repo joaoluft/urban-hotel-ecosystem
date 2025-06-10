@@ -72,6 +72,8 @@ class RoomService:
             available=filters.available,
             min_price=filters.min_price,
             max_price=filters.max_price,
+            checkin_date=filters.checkin_date,
+            checkout_date=filters.checkout_date,
             search=filters.search
         )
         return FilteredRoomsModel(

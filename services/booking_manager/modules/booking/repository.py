@@ -14,6 +14,7 @@ class BookingRepository:
         bookings = list(self.database["bookings"].find({"user_id": user_id}))
         for booking in bookings:
             booking.pop("_id", None)
+
         return bookings
 
     def get_booking(self, booking_id: str):
@@ -28,6 +29,7 @@ class BookingRepository:
         checkout_date: datetime,
         room_id: str,
         user_id: str,
+        room_name: str,
         transaction_id: str,
         payment_status: str,
         amount: float
@@ -38,6 +40,7 @@ class BookingRepository:
             "checkout_date": checkout_date,
             "room_id": room_id,
             "user_id": user_id,
+            "room_name": room_name,
             "transaction_id": transaction_id,
             "payment_status": payment_status,
             "amount": amount,

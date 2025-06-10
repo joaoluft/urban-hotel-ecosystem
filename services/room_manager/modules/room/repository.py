@@ -53,16 +53,11 @@ class RoomRepository:
         available: bool = None,
         min_price: float = None,
         max_price: float = None,
+        checkin_date: str = None,
+        checkout_date: str = None,
         search: str = None
     ):
         query = {}
-
-        if available is not None:
-            query["available"] = available
-        if min_price is not None:
-            query["price"] = {"$gte": min_price}
-        if max_price is not None:
-            query.setdefault("price", {})["$lte"] = max_price
 
         if search:
             search_regex = {"$regex": search, "$options": "i"}
@@ -71,12 +66,37 @@ class RoomRepository:
                 {"details": search_regex},
             ]
 
-        total = self.database["rooms"].count_documents(query)
-        cursor = self.database["rooms"].find(query).skip((page - 1) * per_page).limit(per_page)
+        if min_price is not None:
+            query["price"] = {"$gte": min_price}
+        if max_price is not None:
+            query.setdefault("price", {})["$lte"] = max_price
 
-        rooms = [self.normalize_external_room(room) for room in cursor]
+        rooms = list(self.database["rooms"].find(query))
+        
+        unavailable_room_ids = set()
+        if checkin_date and checkout_date:
+            conflicting_bookings = self.database["bookings"].find({
+                "checkin_date": {"$lt": checkout_date},
+                "checkout_date": {"$gt": checkin_date},
+                "deleted_at": None,
+                "payment_status": {"$ne": "REFUNDED"}
+            })
+            unavailable_room_ids = {booking["room_id"] for booking in conflicting_bookings}
 
-        return {"rooms": rooms, "total": total}
+        filtered_rooms = []
+        for room in rooms:
+            room_id = str(room["_id"])
+            is_available = room.get("available", True) and room_id not in unavailable_room_ids
+
+            if available is None or is_available == available:
+                room["available"] = is_available
+                filtered_rooms.append(self.normalize_external_room(room))
+
+        total = len(filtered_rooms)
+        paginated_rooms = filtered_rooms[(page - 1) * per_page: page * per_page]
+
+        return {"rooms": paginated_rooms, "total": total}
+
 
 def get_repository(database: Database = Depends(get_database)) -> RoomRepository:
     return RoomRepository(database=database)

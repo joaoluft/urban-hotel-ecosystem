@@ -32,3 +32,8 @@ async def delete_booking(
         external_id=external_id
     )
     return {"success": result["success"]}
+
+@router.get("/list", status_code=200)
+async def list_bookings(request: Request, service: BookingService = Depends(get_service)):
+    user = request.state.user
+    return await service.list_bookings(user_external_id=user["user_id"])

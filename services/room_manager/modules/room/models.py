@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 
 class RoomBaseModel(BaseModel):
     external_id: str
@@ -23,6 +24,8 @@ class RoomFiltersModel(BaseModel):
     available: Optional[bool] = None
     min_price: Optional[float] = None
     max_price: Optional[float] = None
+    checkin_date: datetime
+    checkout_date: datetime
     search: Optional[str] = None
 
 class FilteredRoomsModel(BaseModel):
